@@ -1,4 +1,5 @@
 import PySimpleGUI as sg
+import decimal
 
 sg.theme('darkgreen')
 
@@ -11,22 +12,20 @@ layout = [
 
 def coin_split(number):
     number = int(number * 100)
-    quarter = number // 25
+    quarter = str(decimal.Decimal(number) // decimal.Decimal(25))
     balance = number % 25
-    dime = balance // 10
+    dime = str(decimal.Decimal(balance) // decimal.Decimal(10))
     balance = balance % 10
-    nickel = balance // 5
+    nickel = str(decimal.Decimal(balance) // decimal.Decimal(5))
     balance = balance % 5
-    penny = balance // 1
     newline = '\n'
-    return f'quarters: {quarter}{newline}dimes: {dime}{newline}nickels: {nickel}{newline}pennies: {penny}'
+    return f'quarters: {quarter}{newline}dimes: {dime}{newline}nickels: {nickel}{newline}pennies: {balance}'
 
 def change_make(cost, paid):
     remainder = paid - cost
     if remainder < 0:
         return 'Need more money.'
-    else:
-        return coin_split(remainder)
+    return coin_split(remainder)
 
 # print(coin_split(0.58))
 # print(change_make(3.60, 5))
@@ -38,7 +37,7 @@ while True:
     if event == sg.WIN_CLOSED:
         break
     if event == 'Get Change':
-        print(change_make(float(values['_cost_']), float(values['_paid_'])))
+        print(change_make(decimal.Decimal(values['_cost_']), decimal.Decimal(values['_paid_'])))
     if event == 'Clear':
         window['_output_']('')
         window['_cost_']('')
